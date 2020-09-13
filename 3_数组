@@ -1,0 +1,122 @@
+问题3：
+在一个二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。
+请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+
+备注：思想是参考书的
+第一、
+学到的最好思想就是通过分析简单具体的例子，试图寻找普遍的规律！！
+第二、
+永远要判断是否有条件开始进行算法
+
+//=====================参考知识
+数组：连续内存存储数字；
+字符串：连续内存存储字符。
+
+关键要点：
+创建数组时必须指定数组的容量大小，然后根据大小分配内存；既要为所有的数据预先分配内存。
+这样体现了：
+空间效率不是很好，经常会有空闲的区域没有得到充分利用。
+
+由于数组中的内存是连续的，因此可以根据下标，在O(1)时间复杂度内读写任何元素
+体现：
+时间效率很高
+
+应用：
+利用时间效率高的特点，通过数组实现简单的哈希表。
+下标是键值（Key），数组元素是哈希表的值（value），这样就容易实现键值-值的配对
+
+动态数组：vector
+先为数组开辟较小的空间，然后往数组中添加数据。
+当数据数目超出数组容量时，再重新分配一块更大的空间（STL的vector每次扩容时，新的容量都是前一次的两倍）
+扩容对内存管理性能等方面有负面影响，因此要尽量减少改变数组容量大小的操作。
+
+数组与指针：
+数组的名字是一个指针，该指针指向数组的第一个元素，可以用指针来访问数组。
+例如：
+int GetSize(int data[])
+{ 
+return sizeof(data); 
+}
+int main(int argc, char* argv[])
+{
+	int data1[] = {1,2,3,4,5};
+	int size1 = sizeof(data1);
+	int* data2 = data1;
+	int size2 = sizeof(data2);
+	int size3 = GetSize(data1);					//退化成指针
+	
+	printf("%d, %d, %d", size1, size2, size3);	//输出是 20，4，4，单位是字节
+}
+
+//===================第一次提交
+class Solution {
+public:
+    bool Find(int target, vector<vector<int> > array) {
+        int ret = false;
+        if(!array.empty()){									//不应该这么判断数组是否为空，应该直接标出行数和列数
+            int low = 0;
+            int col = array.size()-1;
+            while(low < array.size() && col >= 0){
+                if(target < array[low][col])
+                    col--;
+                else if(target == array[low][col]){			//应该提到最前面的判断条件
+                    ret = true;
+                    break;
+                }else{
+                    low++;
+                }
+            }
+        }
+        
+        return ret;
+    }
+};
+
+//===================第二次提交
+class Solution {
+public:
+    bool Find(int target, vector<vector<int> > array) {
+        int ret = false;
+        if(!array.empty()){
+            int row = 0;
+            int col = array.size()-1;
+            while(row < array.size() && col >= 0){
+                if(target == array[row][col]){				//换汤不换药
+                    ret = true;
+                    break;
+                }else if(target < array[row][col])
+                    col--;
+                else
+                    row++;
+            }
+        }
+        
+        return ret;
+    }
+};
+
+//===================第三次提交
+class Solution {
+public:
+    bool Find(int target, vector<vector<int> > array) {
+        int ret = false;
+        int rows = array.size();			//获取行数
+        int cols = array[0].size();			//获取列数
+        if(rows == 0 || cols == 0)			//判断是否有进行资格的正确方式
+            return ret;
+        int row = 0;
+        int col = cols - 1;
+        while(row < rows && col >= 0){
+            if(target == array[row][col]){
+                ret = true;
+                break;
+            }else if(target < array[row][col])
+              col--;
+            else
+                row++;
+        }
+       return ret;
+    }
+};
+// 空间复杂度稍大
+
