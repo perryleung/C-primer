@@ -1,0 +1,114 @@
+题目4：请实现一个函数，把字符串中的每个空格替换成"%20"。例如"We are happy."替换成"We%20are%20happy"
+
+/*相关知识*/
+
+C++中每个字符串都以字符'\0'作为结尾，可以通过这个来方便地找到字符串最后的尾部。
+另外这个说明每个字符串都有一个额外字符的开销，稍不留神就会造成字符串的越界。
+
+C++把常量字符串放到单独的一个内存区域，当几个“指针”赋值给相同的常量字符串时，它们实际上会指向相同的内存地址。
+但当用常量内存初始化数组时情况却有所不同。
+char str1[] = "hello world";
+char str2[] = "hello world";
+char* str3 = "hello world";
+char* str4 = "hello world";
+str1和str2是两个字符串数组，初始的地址不同，因此str1 != str2;
+str3和str4是两个指针，我们无需为它们分配内存以存储字符串的内容，而只需要把它们指向“hello world"在内存的地址就可以了。
+由于"hello world"是常量字符串，在内存中只有一个拷贝，因此str3 == str4，它们指向相同的地址。
+
+特殊字符例如空格、'#'等，服务器可能无法正确获得参数值，要将这些字符转换成ASC||码或十六进制等。
+
+如果是在原来的字符串上做替换，那么就有可能覆盖修改在该字符串后面的内存。
+如果是创建新的字符串并在新的字符串上做替换，那么我们可以自己分配足够多的内存。
+由于有两种不同的解决方案，我们应该向面试官问清楚，让他明确告诉我们他的需求。
+
+//==========关于c_str()
+c_str()函数返回一个指向正规C字符串的指针常量, 内容与本string串相同。
+
+这是为了与c语言兼容，在c语言中没有string类型，故必须通过string类对象的成员函数c_str()把string 对象转换成c中的字符串样式。
+注意：一定要使用strcpy()函数 等来操作方法c_str()返回的指针。
+
+比如：最好不要这样:
+1 char* c;
+2 string s="1234";
+3 c = s.c_str();
+c最后指向的内容是垃圾，因为s对象被析构，其内容被处理，同时，编译器也将报错——将一个const char *赋与一个char *。
+
+应该这样用：
+1 char c[20];           //字符数组
+2 string s="1234";      //字符串
+3 strcpy(c,s.c_str());  //针对字符数组的操作，c_str()将字符串转换成字符数组
+这样才不会出错，c_str()返回的是一个临时指针，不能对其进行操作。
+
+//============第1次提交，网上的答案
+class Solution {
+public:
+	void replaceSpace(char *str,int length) {
+        string ret, temp = str;
+        for( char x : temp ){
+            if( x == ' ')
+                ret += "%20";
+            else
+                ret += x;
+        }
+        strcpy(str, ret.c_str());
+	}
+};
+
+//==========要试试书本的思想，双指针
+class Solution {
+public:
+	void replaceSpace(char *str,int length) { //length是字符数组str的总容量
+        if(str == NULL && length <= 0)      //总是忘记在最最开始是否有资格进行
+            return;
+        
+        int originalLength = 0;             //包含最后的'\0'
+        int numberOfBlank = 0;
+        int i = 0;
+        while(str[i] != '\0'){
+            //originalLength++;
+            if(str[i] == ' ')
+                numberOfBlank++;
+            i++;
+        }
+        originalLength = i;
+        
+        int newLength = originalLength + 2 * numberOfBlank;
+        if(newLength > length)
+            return;
+        
+        int p1 = originalLength;      //指向原始长度的末尾'\0'
+        int p2 = newLength;           //指向新长度的末尾，最后新的长度下的'\0'
+        while(p1 >= 0 && p2 > p1){    //p1>=0是总前提条件，当p1=p2是可以结束的条件，表明替换完毕
+            if(str[p1] == ' '){       //倒叙遍历，若找到空格则倒叙赋值"%20"
+                str[p2--] = '0';
+                str[p2--] = '2';
+                str[p2--] = '%';
+            }else{
+                str[p2--] = str[p1];  //每次迭代赋值一次
+            }
+            p1--;                     //迭代索引减一
+        }
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
