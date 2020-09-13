@@ -1,0 +1,104 @@
+题目1：赋值运算符函数
+
+class CMyString
+{
+public:
+    CMyString(char* pData = nullptr);	  	//构造函数1
+    CMyString(const CMyString& str);		//复制构造函数
+    ~CMyString(void);
+
+    CMyString& operator = (const CMyString& str);
+      
+private:
+    char* m_pData;
+};
+
+分析：
+有一个复制构造函数，一个析构函数，一个私有成员
+
+注意编写赋值运算符函数时要注意以下几点：
+
+第一、
+要把返回值的类型声明为该类型的引用，并在函数结束前实例自身的引用（即*this)，因为只有这样才能允许连续赋值，否则如果返回void，则不能连续赋值。
+例如，有3个对象str1,str2,str3, 语句str1=str2=str3不能通过编译，因为当返回不是引用类型时，不能作为左值。
+
+第二、
+要把传入的参数的类型声明为常量引用。这样可以提高效率。
+声明为常量的原因：在赋值运算符函数内不会改变传入的实例的状态，因此要加上const。
+声明为引用的原因：如果不是引用，那么传入的将是实例，从形参到实参会调用一次复制构造函数。把参数声明为引用可以避免这样无谓消耗，提高效率。
+
+第三、
+在分配新内存之前，要释放自身已有的空间，否则程序会出现内存泄露。
+就是：要把自己原来的内存释放掉，才能把其他的东西在重新申请的空间里。
+
+第四、
+要在最最前面判断传入的参数是否和当前的实例（*this）相同。
+如果相同则直接返回。
+若*this和传入的参数时同一个实例，那么一旦先释放了自身的内存，则传入的参数的内存也同时被释放，再也找不到要赋值的内容。
+
+//==========复制构造函数
+CMyString::CMyString(const CMyString &str)
+{
+	m_pData = new char[strlen(str.m_pData) + 1];	//注意strlen()不算'\0'
+	strcpy(m_pData, str.m_pData);
+}
+
+//==========构造函数1
+CMyString::CMyString(char* pData)
+{
+	 if(pData==nullptr){
+	 	m_pData = new char[1];
+		m_pData[0] = '\0';						//要自动占一个字符位
+	} else {
+		m_pData = new char[strlen(pData) + 1]; 	//strlen()是不算'\0'的
+		strcpy(m_pData, pData);					//会自动分配'\0'
+	}
+	// return *this; 这里是不应该有返回的
+}
+
+//==========析构函数
+CMyString::~CMyString()
+{
+	delete[] m_pData;
+}
+
+//==========赋值运算符函数，初级，入门，易理解步骤要点
+CMyString& CMyString::operator=(const CMyString& str)	//传入引用
+{
+	if(this == &str)		// &str取址
+		return *this;
+	
+	delete[] m_pData;
+	m_pData = nullptr;		//一开始忘记了
+	
+	m_pData = new char[strlen(str.m_pData) + 1];
+	strcpy(m_pData, str.m_pData);
+	
+	return *this;
+}
+
+//==========赋值运算符函数，高级，需要花心思理解
+CMyString& CMyString::operator=(const CMyString& str)
+{
+	if(this != &str)		// &str取址
+	{
+		CMyString temp(str);
+		char* ptemp = temp.m_pData;
+		temp.m_pData = m_pData;		
+		m_pData = ptemp;
+	}
+	return *this;
+}
+
+备注：
+上述str赋予一个临时实例，当程序运行到if外则自动调用temp的析构函数。
+因此在此之前我们要把temp.m_pData指向自身的m_pData内存，这样就可以在结束后释放掉。
+
+
+
+
+
+
+
+
+
