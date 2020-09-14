@@ -1,0 +1,85 @@
+问题6：输入某二叉树的前序遍历和中序遍历，输出该二叉树
+假设输入的前序遍历和中序遍历的结果都不含有重复的数字，例如：
+输入前序遍历：{1，2，4，7，3，5，6，8}
+输入中序遍历：{4，7，2，1，5，3，8，6}
+struct BinaryTreeNode
+{
+	int value;
+	BinaryTreeNode* lchild;
+	BinaryTreeNode* rchild;
+};
+
+相关知识：
+
+树的逻辑：除了根结点之外每个节点只有一个父节点，除了叶子节点外所有节点都有一个或多个子节点；
+父节点和子节点之间用指针连接。
+
+二叉树是特殊的树，在二叉树中每个节点最多智能有两个子节点。
+最重要的操作是遍历，有如下几种遍历方式：
+前序：根左右
+中序：左根右
+后序：左右根
+
+以上三种遍历有两种实现方式：循环和递归，面试前要熟练掌握这6种方式
+
+宽度优先遍历：一层一层地一直访问到最下面一层，在同一层中由左至右地顺序访问
+
+二叉搜索树：左子节点总是小于或等于根节点，右子节点总是大于等于根节点，可以平均在O(logn)的时间内根据数值在二叉搜索树中找到一个节点
+
+#二叉树的另外两个特例
+堆：分为最大堆和最小堆。在最大堆中根节点的值最大，在最小堆中根节点的值最小。可以快速找到最大值和最小值。
+红黑树：是把树中的节点定义为红、黑两种颜色，通过规则确保从根节点到叶子节点的最长路径的长度不超过最短路径的两倍。
+
+//========书本的思想
+//#输入前序遍历数组、中序遍历数组和数组的长度，输出是树的根节点
+BinaryTreeNode* ConstructCore(int* startPreorder, int* endPreorder, int* startInorder, int* endInorder);
+BinaryTreeNode* Construct(int* Preorder, int* Inorder, int length)
+{
+	if(Preorder == nullptr || Inorder == nullptr || length <= 0)
+		return NULL;
+	return ConstructCore(Preorder, Preorder + length - 1, Inorder, Inorder + length - 1);
+}
+BinaryTreeNode* ConstructCore(int* startPreorder, int* endPreorder, int* startInorder, int* endInorder)
+{
+	//前序遍历序列第一个就是根节点的值
+	int rootvalue = startPreorder[0];
+	BinaryTreeNode* root = new BinaryTreeNode();
+	root->value = rootvalue;
+	root->lchild = root->rchild = nullptr;
+	
+	//中序遍历找到这个根节点值的位置
+	int* rootInorder = startInorder;
+	while(rootInorder >= endInorder && *rootInorder != rootvalue)
+		rootInorder++;
+	
+	//左子树的长度
+	int leftLength = rootInorder - startInorder;
+	//左子树的结尾指针
+	int* leftPreorderEnd = startPreorder + leftLength;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
