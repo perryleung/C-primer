@@ -1,0 +1,104 @@
+问题5：输入一个链表的头结点，从尾到头反过来打印出每个节点的值
+struct ListNode
+{
+	int m_nKey;
+	ListNode* m_pNext;
+};
+
+链表是一种动态的数据结构，它的操作需要对指针进行操作。
+
+在创建链表时无需知道链表长度。
+
+当插入一个结点时，只需要为新节点分配内存，然后调整指针的指向来确保新节点被链接到链表中。
+
+内存分配不是在创建链表时一次性完成的，而是每添加一个节点分配一次一次内存。
+因此不会有闲置的内存，链表的空间效率比数组高。
+
+对链表操作时要询问面试官能否改变链表的结构。
+
+//==========第一次提交
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution {
+public:
+    vector<int> printListFromTailToHead(ListNode* head) {
+        vector<int> res;
+        stack<int> tmp;
+        ListNode* pNode = head;
+        while(pNode->next != NULL){				//这里出错了，导致无法查看到最后一个节点
+            tmp.push(pNode->val);
+            pNode = pNode->next;
+        }
+        while(!tmp.empty()){
+            res.push_back(tmp.top());
+            tmp.pop();
+        }
+        return res;
+    }
+};
+//==========第二次提交
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution {
+public:
+    vector<int> printListFromTailToHead(ListNode* head) {
+        vector<int> res;
+        stack<int> tmp_stack;
+        ListNode* pNode = head;
+        while(pNode != NULL){
+            int tmp_val = pNode->val;				//这就好多了，有中间变量更清晰
+            tmp_stack.push(tmp_val);
+            pNode = pNode->next;
+        }
+        while(!tmp_stack.empty()){
+            res.push_back(tmp_stack.top());
+            tmp_stack.pop();
+        }
+        return res;
+    }
+};
+
+
+//======书本中递归的思想
+/*递归本质就是栈*/
+/*要实现反过来输出链表，每访问一个结点时，先递归输出它后面的节点，再输出该节点自身*/
+/**
+*  struct ListNode {
+*        int val;
+*        struct ListNode *next;
+*        ListNode(int x) :
+*              val(x), next(NULL) {
+*        }
+*  };
+*/
+class Solution {
+public:
+    vector<int> res;					//弄一个全局的结果输出
+    vector<int> fun(ListNode* head){
+        ListNode* pNode = head;
+        if(pNode!=NULL){
+            if(pNode->next!=NULL){		//首先一直访问下去
+                fun(pNode->next);
+            }
+            res.push_back(pNode->val);	//访问不下去了，不为NULL时就push_back
+        }
+        return res;
+    }
+    vector<int> printListFromTailToHead(ListNode* head) {
+        return fun(head);
+    }
+};
