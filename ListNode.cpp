@@ -18,7 +18,7 @@ void ConnectListNode(ListNode* pCurrent, ListNode* pNext)
 	pCurrent->next = pNext;
 }
 
-void PrintListNode(ListNode* pNode)
+void PrintListNode(const ListNode* pNode)
 {
 	if (pNode == nullptr)
 		return;
@@ -26,7 +26,7 @@ void PrintListNode(ListNode* pNode)
 		printf("The value in this node is %d. \n", pNode->value);
 }
 
-void PrintList(ListNode* pHead)
+void PrintList(const ListNode* pHead)
 {
 	if (pHead == nullptr)
 		return;
