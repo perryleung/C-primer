@@ -1,0 +1,67 @@
+问题13：给定单链表的头指针和一个节点指针，定义一个函数在O(1)时间删除该节点
+struct ListNode
+{
+    int value;
+    ListNode* next;
+}
+
+通常的O(n)思路：
+    遍历链表直至找到要删除节点前的那个节点，既我们要删除j，要找到j前面的节点i，用i->next来找，
+    然后用：
+    ListNode* pNode = i->next;
+    i->next = i->next->next;
+    delete pNode;
+    pNode = NULL; //这样才搞定
+    
+用O(1)方法：
+    把j节点后面的那个节点k的内容复制覆盖到j，然后把j->next = k->next，再delete j即可
+    （1）当j是尾节点（用j->next == null判断)时也要遍历整个链表
+    （2）当j是链表中的唯一节点时，就是既是头节点又是尾节点，也需要在删除后设置NULL
+    （3）其他情况都按上述
+    平均时间复杂度：[ (n-1)*O(1) + O(n) ] / n = O(1)符合要求
+    
+void DeleteNode(ListNode** pListHead, ListNode* pToBeDeleted)
+{
+    if(!pListHead || *pListHead)
+        return;
+    if(pToBeDeleted->next != NULL){              //不是尾节点
+        ListNode* pNode = pToBeDeleted->next;
+        pToBeDeleted->value = pNode->value;
+        pToBeDeleted->next = pNode->next;
+        delete pNode;
+        pNode = NULL;
+    }else if(*pListHead == pToBeDeleted){       //是尾节点，也是头节点
+        delete pToBeDeleted;
+        pToBeDeleted = NULL;
+        *pListHead = NULL;  //!!!!!!别忘记了
+    }else{                                      //只是单纯尾节点
+        ListNode* pNode = *pListHead;
+        while(pNode != pToBeDeleted){
+            pNode = pNode->next;
+        }
+        //以下开始pNode == pToBeDeleted
+        pNode->next = NULL;
+        delete pNode;
+        pNode = NULL;
+    }
+}
+
+//=====
+以上的前提是pToBeDeleted确定是链表中的一个节点
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
