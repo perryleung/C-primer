@@ -1,0 +1,71 @@
+问题13：输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+
+提示：用空间换时间，主要是对vector的使用
+
+//=====第一次提交，错误，会混乱
+class Solution {
+public:
+    void reOrderArray(vector<int> &array) {
+        int oddIterator = 0;
+        int evenIterator = 0;
+        int length = array.size();
+        for(int i = 0; i < length; i++){
+            if(array[i] & 0x01)
+                oddIterator = i;
+            else
+                evenIterator = i;
+            if(oddIterator > evenIterator){           //这里的思想在第二次及以后遇到后面一点的奇数只能与前一个偶数交换，而不是最前面的偶数
+                int tmp = array[oddIterator];
+                array[oddIterator] = array[evenIterator];
+                array[evenIterator] = tmp;
+                tmp = oddIterator;
+                oddIterator = evenIterator;
+                evenIterator = tmp;
+            }
+        }
+    }
+};
+
+//=====第二次提交，用两个额外的vector来暂存
+class Solution {
+public:
+    void reOrderArray(vector<int> &array) {
+        //空间换时间
+        vector<int> OddArray, EvenArray;
+        for(int c : array){
+            if(c&1)
+                OddArray.push_back(c);
+            else
+                EvenArray.push_back(c);
+        }
+        array.erase(array.begin(), array.end());
+        array.insert(array.end(), OddArray.begin(), OddArray.end());
+        array.insert(array.end(), EvenArray.begin(), EvenArray.end());
+        //c.insert(p, b, e)
+        //p是c的迭代器，b,e是其他迭代器，将b到e之间的内容插入到p之前
+    }
+};
+
+//=====或其他的运用
+class Solution {
+public:
+    void reOrderArray(vector<int> &array) {
+        vector<int>odday;
+        vector<int>evenay;
+        int n=array.size();
+        /*if(n==0||n==1)
+            return;*/
+        for(int i=0;i<n;i++)
+        {
+            if(array[i]%2==1)       //推荐用位运算 array[i]&1==1
+                odday.push_back(array[i]);
+            else
+                evenay.push_back(array[i]);
+        }
+        array.clear();  //c.clear()的用法是清空
+        for(int i=0;i<odday.size();i++)
+           array.push_back(odday[i]);
+        for(int i=0;i<evenay.size();i++)
+           array.push_back(evenay[i]);
+   }
+};
