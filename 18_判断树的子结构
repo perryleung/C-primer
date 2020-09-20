@@ -1,0 +1,31 @@
+问题18：输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+
+//=====书上的思路和网上的思路差不多都是用递归，自己没有思路
+bool HasSubTree( BinaryTree* pRoot1, BinaryTree* pRoot2 )
+{
+    //当Tree1和Tree2都不为零的时候，才进行比较。否则直接返回false
+    if( pRoot1 == NULL || pRoot2 == NULL )              
+        return false;
+    bool result = false;
+    if(pRoot1->value == pRoot2->value)                  //如果找到了对应Tree2的根节点的点
+        result = DoesTree1HasTree2(pRoot1, pRoot2);     //以这个根节点为为起点判断是否包含Tree2
+    if(!result)
+        result = HasSubTree(pRoot1->left, pRoot2);      //如果找不到，那么就再去root的左儿子当作起点，去判断时候包含Tree2
+    if(!result)
+        result = HasSubTree(pRoot1->right, pRoot2);     //如果还找不到，那么就再去root的右儿子当作起点，去判断时候包含Tree2
+    return result;                                      //返回结果
+}
+
+bool DoesTree1HasTree2(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2)
+{
+    if(pRoot2 == NULL)
+        return true;
+    if(pRoot1 == NULL)
+        return false;
+    if(pRoot1->value != pRoot2->value)
+        return false;
+    
+    return DoesTree1HasTree2(pRoot1->left, pRoot2->left) && DoesTree1HasTree2(pRoot1->right, pRoot2->right);
+}
+
+//没太看懂思路，回头再做
