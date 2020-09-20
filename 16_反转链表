@@ -1,0 +1,50 @@
+问题16：定义一个函数输入一个链表头节点，反转该链表并输出反转后的头节点
+
+关键：
+要声明三个指针：当前的结点、前一个结点、下一个结点
+（1）输入的链表头节点为NULL或者这个链表只有一个节点时，程序容易不行
+（2）反转后出现断裂
+（3）返回的反转之后的头节点必须是原链表的尾节点
+
+//=====第二次提交，第一次提交忘记写while的条件了
+class Solution {
+public:
+    ListNode* ReverseList(ListNode* pHead) {
+        if(pHead == NULL)               //！！！！！画图更容易理解！！！！！！
+            return NULL;
+        ListNode* resultNode = NULL;    //结果头节点
+        ListNode* pNode = pHead;        //当前节点
+        ListNode* pre_pNode = NULL;     //当前节点的前一个节点
+        while(pNode){                   //条件是遍历到最后一个节点
+            ListNode* next_pNode = pNode->next;     //首先保存当前节点的下一个节点
+            if(next_pNode == NULL)                  //当下一个节点是空时，意味着已经遍历到的原链表的尾节点了，尾节点是反转节点的头节点
+                resultNode = pNode;
+            pNode->next = pre_pNode;    //将当前节点的指向调转，指向前节点
+            pre_pNode = pNode;          //上一步的“当前节点”已经反转完成，那么下一次的“当前节点”的前节点更新
+            pNode = next_pNode;         //“当前节点”更新为下一个节点，然后开始新一轮的迭代
+        }
+        return resultNode;
+    }
+};
+
+//=====第三次提交，省掉一些内存
+class Solution {
+public:
+    ListNode* ReverseList(ListNode* pHead) {
+        if(pHead == NULL)
+            return NULL;
+        //ListNode* resultNode = NULL;
+        ListNode* pNode = pHead;
+        ListNode* pre_pNode = NULL;
+        while(pNode){
+            ListNode* next_pNode = pNode->next;
+            //if(next_pNode == NULL)
+                //resultNode = pNode;
+            pNode->next = pre_pNode;
+            pre_pNode = pNode;
+            pNode = next_pNode;
+        }
+        //return resultNode;
+        return pre_pNode;
+    }
+};
