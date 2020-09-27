@@ -1,0 +1,91 @@
+问题24：输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则返回true,否则返回false。假设输入的数组的任意两个数字都互不相同。
+
+一些思想：后序遍历序列的最后一个数字是根节点，此数字的前面序列可以分成两个部分：
+一部分是比根节点值小的左子树部分，另一部分是比根节点值大的右子树部分；
+
+例如：{5，7，6，9，11，10，8}，非后序遍历的二叉搜索树：{7，4，6，5}
+
+课本的代码：
+bool VerifySquenceOfBST(int sequence[], int length)
+{
+    if(sequence == NULL || length <= 0)
+        return false;
+    int root = sequence[length - 1];
+    
+    //二叉树中搜索树中左子树的结点小于根节点
+    int i = 0;
+    for(; i < length - 1; i++)
+    {
+        if(sequence[i] > boot)
+            break;
+    }
+    
+    //在二叉树搜索树中右子树的结点大于根节点
+    int j = i;
+    for(; j < length - 1; j++)
+    {
+        if(sequence[j] < root)
+            return false;
+    }
+    
+    //判断左子树是不是二叉搜索树
+    bool left = true;
+    if(i > 0)
+        left = VerifySquenceOfBST(sequence, i);
+    //判断右子树是不是二叉搜索树
+    boot right = true;
+    if(i < length - 1)
+        right = VerifySquenceOfBST(sequence + i, length - i - 1);
+    
+    return (left && rigth); 
+}
+
+//=========牛客网上代码，真的牛
+/*
+二叉搜索树后序遍历的特点：根节点在最后，最前面的是小于根节点的左子树部分，中间是大于根节点的右子树部分
+那么，从倒数的数字来看，在二叉搜索树的序列特点是：
+（1）倒数第一个数比倒数第二个数小，比前面（一系列或一个或没有）的数大，通过这个特点可以找到左子树；
+（2）左子树找完后索引加一就是右子树序列的开头第一个，通过比较可以找到右子树序列；
+
+以{5，7，6，9，11，10，8}为例子：
+通过完成第一次迭代以上两个步骤后，通过索引值的比较来确定序列是否是二叉搜索树的后序遍历序列
+然后初始根节点索引--，使索引指向原根节点的前一个结点：
+    如果序列符合二叉搜索树序列，那么这个索引指向的新节点代表的是另外一个“根节点”
+*/
+class Solution {
+public:
+    bool VerifySquenceOfBST(vector<int> sequence) {
+        if(sequence.size() == 0)
+            return false;
+        int j = 0;
+        for(int i = sequence.size() - 1; i > 0; i--){
+            while(sequence[j] < sequence[i]) j++;
+            while(sequence[j] > sequence[i]) j++;
+            if(j < i)   //这一步是关键
+                return false;
+            j = 0;
+        }
+        return true;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
