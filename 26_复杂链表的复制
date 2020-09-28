@@ -62,7 +62,9 @@ ComplexListNode* ReconnectNodes(ComplexListNode* pHead)
     }
     while(!pNode)                                           //拆分
     {
+        pClonedNode->next = pNode->next;
         pCloned = pNode->next;
+        pNode->next = pClonedNode->next;
         pNode = pCloned->next;
     }
     return ret;
