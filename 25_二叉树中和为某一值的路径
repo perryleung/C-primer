@@ -1,0 +1,88 @@
+题目25：二叉树中和为某一值的路径
+输入一颗二叉树的根节点和一个整数，按字典序打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
+
+课本思路以及方法代码：
+（1）路径总是从根节点开始的，要想先访问到根节点可以使用前序遍历；
+（2）用前序遍历访问到某一个结点时，把该结点添加到路径上，并累加该结点的值；
+（3）若该结点是叶子结点，且路径中结点值刚好等于输入的整数，则符合要求，将路径上的结点打印出来；
+（4）若当前不是叶子节点，则继续访问此节点的子节点；
+（5）当前访问结束后，递归函数自动回到它的父节点；
+（6）要在函数退出前在路径上删除当前节点并减去当前节点的值，以确保返回父节点时路径刚好是从根节点到父节点的路径；
+（7）实际上保存路径的数据结构就是一个栈，因为路径要与递归调用状态一致，递归本身就是压栈和出栈的过程；
+//=====课本代码：
+void FindPath(BinaryTreeNode* pRoot, int expectedSum)
+{
+    if(pRoot == NULL)
+        return;
+    std::vector<int> path;
+    int currentSum = 0;
+    FindPath(pRoot, expectedSum, path, currentSum);
+}
+void FindPath //这是一种写形参的方法
+(
+    BinaryTreeNode*     pRoot,
+    int                 expectedSum,
+    std::vector<int>&   path,
+    int&                currentSum
+)
+{
+    currentSum += pRoot->value;
+    path.push_back(pRoot->value);
+    
+    //如果是叶子节点且路径和等于期望值，则打印路径
+    bool isLeaf = pRoot->left == NULL && pRoot->right == NULL;
+    if(currentSum == expectedSum && isLeaf)
+    {
+        printf("A path is found : ");
+        std::vector<int>::iterator iter = path.begin();
+        for(; iter != path.end(); iter++)
+            printf("%d\t", *iter);
+        printf("\n");
+    }
+    
+    //如果不是叶子节点，则遍历它的子节点
+    if(pRoot->left != NULL)
+        FindPath(pRoot->left, expectedSum, path, currentSum);
+    if(pRoot->right != NULL)
+        FindPath(pRoot->right, expectedSum, path, currentSum);
+    
+    //在返回父节点前，在路径上删除当前节点
+    //并在currentSum中减去当前值
+    currentSum -= pRoot->value;
+    path.pop_back();
+}
+//=====牛客代码
+class Solution {
+public:
+    vector<int> tmp;
+    vector<vector<int> > ret;
+    vector<vector<int> > FindPath(TreeNode* root,int expectNumber) {
+        if(!root)
+            return ret;
+        tmp.push_back(root->val);
+        if(!root->left && !root->right && expectNumber == root->val)
+            ret.push_back(tmp);//找到一条路径
+        //先找left再找right是dfs
+        FindPath(root->left, expectNumber - root->val);
+        FindPath(root->right, expectNumber - root->val);
+        tmp.pop_back();//说明此时这条路径不是想要的，回到上一个节点
+        return ret;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
