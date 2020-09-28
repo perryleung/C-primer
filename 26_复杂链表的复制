@@ -76,8 +76,157 @@ ComplexListNode* Clone(ComplexListNode* pHead)
     return ReconnectNodes(pHead);
 }
 
-
-
+//=====第一次提交
+/*
+struct RandomListNode {
+    int label;
+    struct RandomListNode *next, *random;
+    RandomListNode(int x) :
+            label(x), next(NULL), random(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if(!pHead)
+            return NULL;
+        RandomListNode* pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned = new RandomListNode(0);
+            pCloned->label = pNode->label;//新节点，要赋值
+            pCloned->next = pNode->next;
+            pCloned->random = NULL;
+            pNode->next = pCloned;
+            pNode = pCloned->next;
+        }
+        pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned_tmp = pNode->next;
+            if(pNode->random)
+                pCloned_tmp->random = pNode->random->next;
+            pNode = pCloned_tmp->next;
+        }
+        pNode = pHead;
+        RandomListNode* retHead = pHead->next;
+        RandomListNode* pCloned_tmp_tmp = retHead;
+        pNode->next = pCloned_tmp_tmp->next;
+        while(pNode){
+            pCloned_tmp_tmp->next = pNode->next;              //
+            pNode = pCloned_tmp_tmp->next->next;              //这里出问题
+        } 
+        return retHead;
+    }
+};
+//=====第二次提交
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if(!pHead)
+            return NULL;
+        RandomListNode* pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned = new RandomListNode(0);
+            pCloned->label = pNode->label;//新节点，要赋值
+            pCloned->next = pNode->next;
+            pCloned->random = NULL;
+            pNode->next = pCloned;
+            pNode = pCloned->next;
+        }
+        pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned_tmp = pNode->next;
+            if(pNode->random)
+                pCloned_tmp->random = pNode->random->next;
+            pNode = pCloned_tmp->next;
+        }
+        pNode = pHead;
+        RandomListNode* retHead = pHead->next;
+        RandomListNode* pCloned_tmp_tmp = retHead;
+        pNode->next = pCloned_tmp_tmp->next;
+        while(pNode){
+            pCloned_tmp_tmp->next = pNode->next;
+            pCloned_tmp_tmp = pCloned_tmp_tmp->next;
+            pNode->next = pCloned_tmp_tmp->next;
+            pNode = pCloned_tmp_tmp->next->next;
+        }
+        return retHead;
+    }
+};
+//=====第三次提交
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if(!pHead)
+            return NULL;
+        RandomListNode* pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned = new RandomListNode(pNode->label);
+            pCloned->next = pNode->next;
+            pCloned->random = NULL;
+            pNode->next = pCloned;
+            pNode = pCloned->next;
+        }
+        pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned_tmp = pNode->next;
+            if(pNode->random)
+                pCloned_tmp->random = pNode->random->next;
+            pNode = pCloned_tmp->next;
+        }
+        pNode = pHead;
+        RandomListNode* retHead = pHead->next;
+        RandomListNode* pCloned_tmp_tmp = retHead;
+        pNode->next = pCloned_tmp_tmp->next;
+        pNode = pNode->next;
+        while(pNode){
+            pCloned_tmp_tmp->next = pNode->next;
+            pCloned_tmp_tmp = pCloned_tmp_tmp->next;
+            pNode->next = pCloned_tmp_tmp->next;
+            pNode = pCloned_tmp_tmp->next->next;
+        }
+        return retHead;
+    }
+};
+//=====第四次提交，才成功，注意多看几遍细节
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if(!pHead)
+            return NULL;
+        RandomListNode* pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned = new RandomListNode(pNode->label);
+            pCloned->next = pNode->next;
+            pCloned->random = NULL;
+            pNode->next = pCloned;
+            pNode = pCloned->next;
+        }
+        pNode = pHead;
+        while(pNode){
+            RandomListNode* pCloned_tmp = pNode->next;
+            if(pNode->random)
+                pCloned_tmp->random = pNode->random->next;
+            pNode = pCloned_tmp->next;
+        }
+        pNode = pHead;
+        RandomListNode* retHead = pNode->next;
+        RandomListNode* pCloned_tmp_tmp = retHead;
+        pNode->next = pCloned_tmp_tmp->next;
+        pNode = pNode->next;
+        while(pNode){
+            pCloned_tmp_tmp->next = pNode->next;
+            pCloned_tmp_tmp = pCloned_tmp_tmp->next;
+            pNode->next = pCloned_tmp_tmp->next;
+            pNode = pNode->next;
+        }
+        return retHead;
+    }
+};
 
 
 
