@@ -1,0 +1,48 @@
+问题28：输入一个字符串,按字典序打印出该字符串中字符的所有排列。
+例如输入字符串abc,则按字典序打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
+输入一个字符串,长度不超过9(可能有字符重复),字符只包括大小写字母。
+
+课本思路：
+将复杂问题分解成小问题：将字符串分成两部分：第一部分是第一个字符、第二部分是剩下的字符串
+然后排序这两个部分的顺序；
+再将第二部分的字符串同样分解成两部分后再排序
+（1）把字符串分成两部分，一部分是字符串的第一个字符，另一部分是第一个字符以后的所有字符，求第二部分的字符串的排列；
+（2）拿第一个字符和它后面的字符逐个交换；
+
+/*就是递归*/
+
+//=====课本代码
+void Permutation(char* pStr)
+{
+    if(pStr == NULL)
+        return;
+    Permutation(pStr, pStr);
+}
+void Permutation(char* pStr, char* pBegin)
+{
+    if(*pBegin == '\0')
+        printf("%s\n",pStr);
+    else
+    {
+        for(char* pCh = pBegin; *pCh != '\0'; ++pCh)
+        {
+            char temp = *pCh;
+            *pCh = *pBegin;
+            *pBegin = temp;
+            
+            Permutation(pStr, pBegin + 1);
+            
+            temp = *pCh;
+            *pCh = *pBegin;
+            *pBegin = temp;
+        }
+    }
+}
+
+
+
+
+
+
+
+
