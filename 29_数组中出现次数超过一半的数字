@@ -1,0 +1,141 @@
+问题29：数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
+
+/*课本方法*/
+//=====基于快排的方法O(n)
+/*
+1、排序后位于数组中间的数字一定是那个出现次数超过数组长度一半的数字；
+2、随机快排方法：
+          在数组中随机选择一个数字，调整数组中数字的顺序：
+          比选中的数字小的都排在它左边，比它大的都排在它的右边
+*/
+int MoreThanHalfNum(int* numbers, int length)
+{
+    if( CheckInvalidArray(numbers, length) )
+        return 0;
+    
+    int middle = length >> 1;   //右移1位，除以2
+    int start = 0;
+    int end = length - 1;
+    int index = Partition(numbers, length, start, end);
+    while( index != middle )
+    {
+        if( index > middle )        //选中的数字的下标比middle大，则可以在此数字的左边部分的数字查找；
+        {
+            end = index - 1;
+            index = Partition(numbers, length, start, end);                
+        }else                       //选中的数字的下标比middle小，则可以在此数字的右边部分的数字查找；
+        {
+            start = index + 1;
+            index = Partition(numbers, length, start, end);
+        }
+    }
+    int result = numbers[middle];
+    if( !CheckMoreThanHalf(numbers, length, result);
+        return 0;
+    return result; 
+}
+
+//=====鲁棒性
+bool g_bInputInvalid = false;
+bool CheckInvalidArray(int* numbers, int length)
+{
+    g_bInputInvalid = false;
+    if(numbers == NULL && length <= 0)
+        g_bInputInvalid = true;
+    return b_gInputInvalid;
+}
+bool CheckMoreThanHalf( int* numbers, int length, int number)
+{
+    int times = 0;
+    for(int i = 0; i < length; ++i)
+    {
+        if( numbers[i] == number)
+            times++;
+    }
+    bool isMoreThanHalf = true;
+    if(times * 2 <= length)
+    {
+        g_bInputInvalid = true;
+        isMoreThanHalf = false;
+    }
+    return isMoreThanHalf;
+}
+//=====根据数组特点找出O(n)的算法
+数组中目标数字出现的次数要比其他所有数字加起来还要多，那么可以用以下方法：
+（1）从数组头开始遍历，声明两个变量，一个变量记录次数times，另一个变量记录目标object；
+（2）初始化times = 0；object = num[0]；
+（3）如果遍历到当前数字和之前保存的数字相同，则times++，object若与当前不同，则把当前值赋给object；
+（4）如果遍历到当前数字和之前保存的数字不同，则times--，object不变；
+（5）如果遍历到当前数字时times==0，则此时让times=0，且把当前值赋给object；
+（6）结果就是object；
+
+//=====最新提交
+class Solution {
+public:
+    int MoreThanHalfNum_Solution(vector<int> numbers) {
+        if(numbers.size() <= 0) //或者empty()
+            return 0;
+        int times = 1;
+        int object = numbers[0];
+        for(int i = 1; i < numbers.size(); i++){
+            if(times == 0){
+                times = 1;
+                object = numbers[i];
+            }else if(object == numbers[i])
+                times++;
+            else
+                times--;
+        }
+        if(Check(numbers, object))
+            return object;
+        return 0;
+    }
+    bool Check(vector<int> numbers, int num){
+        int cnt = 0;
+        bool check = false;
+        for(int i = 0; i < numbers.size(); i++)
+            if(num == numbers[i])
+                cnt++;
+        if(cnt * 2 > numbers.size())
+            check = true;
+        return check;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
