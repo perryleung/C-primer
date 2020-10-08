@@ -1,0 +1,77 @@
+问题33：把数组排成最小的数
+输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+
+课本思路：
+定义两个数字 m和 n能拼接成 mn 和 nm，如果 mn < nm 则定义 m 小于 n
+反之，如果 nm < mn 则定义 n 小于 m;
+若 nm = mn 则定义 n == m;
+
+n m都在 int 的表示范围，但拼接而成的数字可能就会有溢出的风险，那么解决方法就是把数字转换成字符串；
+
+//=====课本代码
+const int g_MaxNumberLength = 10;
+
+char* g_StrCombine1 = new char[g_MaxNumberLength * 2 + 1];
+char* g_StrCombine2 = new char[g_MaxNumberLength * 2 + 1];
+
+int compare(const void* strNumber1, const void* strNumber2)
+{
+    strcpy(g_StrCombine1, *(const char**)strNumber1);   //复制过去1
+    strcat(g_StrCombine1, *(const char**)strNumber2);   //2接到1的尾部
+    strcpy(g_StrCombine2, *(const char**)strNumber2);   //复制过去2
+    strcat(g_StrCombine2, *(const char**)strNumber1);   //1接到2的尾部    
+    return strcmp(g_StrCombine1, g_StrCombine2);        //比较后返回
+}
+
+void PrintMinNumber(int* numbers, int length)
+{
+    if(numbers == NULL || length <= 0)
+        return;
+    char** strNumbers = (char**) (new int[length]);
+    for(int i = 0; i < length; i++)
+    {
+        strNumbers[i] = new char[g_MaxNumberLength + 1];    //字符子数组空间 + 1
+        sprintf(strNumbers[i], "%d", numbers[i]);           //数字转字符串
+    }
+    qsort(strNumbers, length, sizeof(char*), compare);
+    for(int i = 0; i < length; ++i)
+        printf("%s", strNumbers[i]);
+    printf("\n");
+    for(int i = 0; i < length; ++i);
+        delete [] strNumbers[i];        //删除每一维的空间
+    delete [] strNumbers;               //删除所有空间
+    //感觉剩下的空间要赋值一个NULL
+}
+
+//=====牛客的代码
+class Solution {
+public:
+    //静态的原因是？
+    //仿函数需要静态，另外排序函数中仿函数需要返回的是交换条件
+    static bool cmp(int a, int b){
+        string a_string = to_string(a) + to_string(b);
+        string b_string = to_string(b) + to_string(a);
+        return a_string < b_string;
+    }
+    string PrintMinNumber(vector<int> numbers) {
+        string ret;
+        if(numbers.size() <= 0)
+            return ret;
+        sort(numbers.begin(), numbers.end(), cmp);
+        for(int i = 0; i < numbers.size(); ++i){
+            ret += to_string(numbers[i]);
+        }
+        return ret;
+    }
+};
+
+
+
+
+
+
+
+
+
+
