@@ -1,0 +1,84 @@
+问题35：第一个只出现一次的字符
+在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1
+（需要区分大小写）（从0开始计数）
+
+//=====课本思想：
+
+直观思路：
+从头开始扫描这个字符串中的每个字符，访问到当前字符时与后面的每个字符相比较；
+如果后面没有这个字符，则当前字符就是只出现一次的字符；
+时间复杂度是O(n²)
+
+好的思路;
+1、用一个容器统计每个字符在该字符串中出现的次数：用哈希表容器把一个字符映射成一个数字，既哈希表键值Key是字符，值Value是次数
+2、字符char是一个 8比特（1个字节）的数据类型，因此共有256种可能，要创建一个长度为256的数组；
+3、每个字母根据其ASCII码值作为数组下标对应数组的一个数字，而数组种存储的是每个字符出现的次数；
+4、要扫描两次，第一次是统计，第二次是查找次数为 1的字符，两次的时间复杂度都是 O(n)，故总的是 O(n)
+5、需要一个包含256个字符的辅助数组，它的大小是 1K（1个字节），常数数组，空间复杂度是 O(1)
+
+//=====课本代码
+char FirstNotRepeatingChar(char* pString)
+{
+    if(pString == NULL)
+        return '\0';
+    const int tableSize = 256;
+    unsigned int hashTable[tableSize];
+    for(unsigned int i = 0; i < tableSize; i++)
+        hashTable[i] = 0;
+    
+    char* pHashKey = pString;
+    while(*pHashKey != '\0')
+        hashTable[*(pHashKey++)]++;
+    
+    pHashKey = pString;
+    while(*pHashKey != '\0')
+    {
+        if(hashTable[*pHashKey] == 1)
+            return *pHashKey;
+        pHashKey++;
+    }
+    return '\0';
+}
+
+//=====第一次提交
+class Solution {
+public:
+    int FirstNotRepeatingChar(string str) {
+        if(str.size() <= 0)
+            return -1;
+        const int TableSize = 256;
+        unsigned int HashTable[TableSize] = {0};
+        for(int i = 0; i < str.size(); ++i){
+            HashTable[str[i]]++;        //注意 HashKey的形式是 str(i)，可以当成是 char啦
+        }
+        for(int i = 0; i < str.size(); ++i){
+            if(HashTable[str[i]] == 1)
+                return i;       //题目要求是要找出位置
+        }
+        return -1;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
