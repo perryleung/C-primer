@@ -1,0 +1,124 @@
+问题38：
+统计一个数字在升序数组中出现的次数。
+
+排序的思路 --> 二分法查找
+
+一般：
+二分法先找到一个 3，然后在找到的3的左右两边顺序扫描，分别找出第一个和最后一个，
+因为有可能查找的数组长度在数组中出现的次数是n，所以时间复杂度 O(n)，与按顺序扫描一样没有降低；
+
+改进：
+直接用二分法找第一个k和最后一个k，时间复杂度 O(logN)
+
+//======课本代码
+int GetFirstK(int* data, int length, int k, int start, int end)
+{
+    if(start > end)
+        return -1;
+    int middleIndex = (start + end) / 2;
+    int middleData = data[middleIndex];
+    if(middleData == k)
+    {
+        if((middleIndex > 0 && data[middleIndex - 1] != k ) || middleIndex == 0)
+            return middleIndex;
+        else
+            end = middleIndex - 1;
+    }
+    else if(middleData > k)
+        end = middleIndex - 1;
+    else
+        start = middleIndex + 1;
+    return GetFirstK(data, length, k, start, end);
+}
+int GetLastK(int* data, int length, int k, int start, int end)
+{
+    if(start > end)
+        return -1;
+    int middleIndex = (start + end) / 2;
+    int middleData = data[middleIndex];
+    if(middleData == k)
+    {
+        if((middleIndex < length - 1 && middleData[middleIndex + 1] != k) || middleIndex == k - 1)
+            return middleIndex;
+        else
+            start = middleIndex + 1;
+    }
+    else if(middleData < k)
+        start = middleIndex + 1;
+    else
+        end = middleIndex - 1;
+    return GetLastK(data, length, k, start, end);
+}
+int GetNumberOfK(int* data, int length, int k)
+{
+    int count = 0;
+    if(data != NULL && length > 0)
+    {
+        int first = GetFirstK(data, length, k, 0, length - 1);
+        int last = GetLastK(data, length, k, 0, length - 1);
+        if(first > -1 && last > -1)
+            number = last - first + 1;
+    }
+    return number;
+}
+
+//======牛客1
+利用C++ stl的二分查找
+class Solution {
+public:
+    int GetNumberOfK(vector<int> data ,int k) {
+        auto resultPair = equal_range(data.begin(), data.end(),k);
+        return resultPair.second - resultPair.first;
+    }
+};
+//=====牛客2
+//因为data中都是整数，所以可以稍微变一下，不是搜索k的两个位置，而是搜索k-0.5和k+0.5
+//这两个数应该插入的位置，然后相减即可。
+class Solution {
+public:
+    int GetNumberOfK(vector<int> data ,int k) {
+        return biSearch(data, k+0.5) - biSearch(data, k-0.5) ;
+    }
+private:
+    int biSearch(const vector<int> & data, double num){
+        int s = 0, e = data.size()-1;      
+        while(s <= e){
+            int mid = (e - s)/2 + s;
+            if(data[mid] < num)
+                s = mid + 1;
+            else if(data[mid] > num)
+                e = mid - 1;
+        }
+        return s;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
