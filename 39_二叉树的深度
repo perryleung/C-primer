@@ -1,4 +1,4 @@
-问题39：
+问题39.1：
 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度
 
 课本代码，也是思路：
@@ -16,4 +16,82 @@ public:
         return (nLeftDepth > nRightDepth) ? (nLeftDepth + 1) : (nRightDepth + 1);
     }
 };
+
+问题39.2：
+输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+平衡二叉树：任意节点的左右子树深度差不超过1
+在这里，我们只需要考虑其平衡性，不需要考虑其是不是排序二叉树
+//=====课本思路&第一次提交
+class Solution {
+public:
+    int TreeDepth(TreeNode* pRoot)
+    {
+        if(pRoot == NULL)
+            return 0;
+        int nLeftDepth = TreeDepth(pRoot->left);
+        int nRightDepth = TreeDepth(pRoot->right);
+        return (nLeftDepth > nRightDepth) ? (nLeftDepth + 1) : (nRightDepth + 1);
+    }
+    bool IsBalanced_Solution(TreeNode* pRoot) {
+        if(pRoot == NULL)
+            return true;
+        int nLeftDepth = TreeDepth(pRoot->left);        //左子树深度
+        int nRightDepth = TreeDepth(pRoot->right);      //右子树深度
+        int dif = nLeftDepth - nRightDepth;             //深度差
+        if(dif > 1 || dif < -1)
+            return false;
+        //else                  //符合条件了则继续判断下一个节点
+        //    return true;      //而不应该直接返回true
+        return IsBalanced_Solution(pRoot->left) && IsBalanced_Solution(pRoot->right);
+    }
+};
+//=====效率更高的思路：每个节点只遍历一次的解法
+用后序遍历，在遍历到一个节点之前就已经遍历了它的左右子树，只要遍历到每个结点的时候记录它的深度，就可判断
+
+//======课本代码，不太懂
+bool IsBalanced(BinaryTreeNode* pRoot, int* pDepth)
+{
+    if(pRoot == NULL)
+    {
+        *pDepth = 0;
+        return true;
+    }
+    int left, right;
+    if( IsBalanced(pRoot->left, &left) && IsBalanced(pRoot->right, &right) )
+    {
+        int diff = lefr - right;
+        if(diff <= 1 && diff >= -1)
+        {
+            *pDepth = 1 + (left > right ? left : right);
+            return true;
+        }
+    }
+    return false;
+}
+bool IsBalanced(BinartTreeNode* pRoot)
+{
+    int depth = 0;
+    return IsBalanced(pRoot, &depth);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
