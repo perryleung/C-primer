@@ -1,0 +1,82 @@
+50问题：
+
+1、二叉搜索树找最低公共祖先
+思路：
+    二叉搜索树是排序过的，位于左子树的结点都比父结点小，而位于右子树的结点都比父结点大，我们只需要从树的根结点开始和两个输入的结点进行比较。
+        如果当前结点的值比两个结点的值都大，那么最低的共同父结点一定是在当前结点的左子树中，于是下一步遍历当前结点的左子结点。
+        如果当前结点的值比两个结点的值都小，那么最低共同父结点一定在当前结点的右子树中，于是下一步遍历当前结点的右子结点。
+        这样在树中从上到下找到的第一个在两个输入结点的值之间的结点，就是最低的公共祖先。
+
+2、普通树找最低公共祖先（有指向父结点的指针）
+思路：
+    如果树中的每个结点(除根结点之外)都有一个指向父结点的指针，这个问题可以转换成求两个链表的第一个公共结点。
+    假设树结点中指向父结点的指针是pParent, 那么从树的每一个叶结点开始都有一个由指针pParent串起来的链表，这些链表的尾指针都是树的根结点。
+    输入两个结点，那么这两个结点位于两个链表上，它们的最低公共祖先刚好就是这两个链表的第一个公共结点。
+    
+3、普通树找最低公共祖先（无指向父结点的指针）
+思路：
+    利用辅助内存，用两个链表分别保存从根节点到输入的两个结点的路径，然后把问题转换成两个链表的最后公共结点；
+    为了得到从根结点开始到输入的两个结点的两条路径，需要遍历两次树，每遍历一次的时间复杂度是O(n)；
+    得到两条路径的长度在最差情况时是O(n)，通常情况下两条路径的长度是O(logn)
+代码：
+bool GetNodePath(TreeNode* pRoot, TreeNode* pNode, list<TreeNode*>& path)
+{
+    if(pRoot == pNode)
+        return true;
+    path.push_back(pRoot);
+    bool found = false;
+    vector<TreeNode*>::iterator i = pRoot->m_vChildren.begin();
+    while(!found && i < pRoot->m_vChildren.end())
+    {
+        found = GetNodePath(*i, pNode, path);
+        ++i;
+    }
+    if(!found)
+        path.pop_back();
+    return found;    
+}
+TreeNode* GetLastCommonNode(const list<TreeNode*>& path1, const list<TreeNode*>& path2)
+{
+    list<TreeNode*>::const_iterator iter1 = path1.begin();
+    list<TreeNode*>::cosnt_iterator iter2 = path2.begin();
+    TreeNode* pLast = NULL;
+    while(iter1 != path1.end() && iter2 != path2.end())
+    {
+        if(*iter1 == *iter2)    //取*才能读到迭代器的内容 TreeNode*
+            pLast = *iter1;
+        iter1++;
+        iter2++;
+    }
+    return pLast;
+}
+TreeNode* GetLastCommonParent(TreeNode* pRoot, TreeNode* pNode1, TreeNode* pNode2)
+{
+    if(pRoot == NULL || pNode1 == NULL || pNode2 == NULL)
+        return NULL;
+    list<TreeNode*> path1;
+    list<TreeNode*> path2;
+    GetNodePath(pRoot, pNode1, path1);
+    GetNodePath(pRoot, pNode2, path2);
+    return GetLastCommonNode(path1, path2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
